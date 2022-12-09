@@ -3,4 +3,4 @@ from rest_framework.response import Response
 
 @api_view(['GET'])
 def product_model_list(request):
-    return Response
+    return Response('ok')
