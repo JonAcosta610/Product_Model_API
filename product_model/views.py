@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .serializers import ProductModelSerializer
 from .models import ProductModel
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 @api_view(['GET', 'POST'])
 def product_model_list(request):
@@ -18,11 +19,14 @@ def product_model_list(request):
         else:
             return Response(serializer.data, status=400)
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 def product_model_detail(request, pk):
-    try:
-        product = ProductModel.objects.get(pk=pk)
+    product = get_object_or_404(ProductModel, pk=pk)
+    if request.method == 'GET':
         serializer = ProductModelSerializer(product)
         return Response(serializer.data)
-    except ProductModel.DoesNotExist:
-        return Response(status=404)
+    elif request.method == 'PUT':
+        serializer = ProductModelSerializer(product, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
