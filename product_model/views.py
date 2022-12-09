@@ -17,3 +17,12 @@ def product_model_list(request):
             return Response(serializer.data, status=201)
         else:
             return Response(serializer.data, status=400)
+
+@api_view(['GET'])
+def product_model_detail(request, pk):
+    try:
+        product = ProductModel.objects.get(pk=pk)
+        serializer = ProductModelSerializer(product)
+        return Response(serializer.data)
+    except ProductModel.DoesNotExist:
+        return Response(status=404)
